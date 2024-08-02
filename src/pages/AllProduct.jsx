@@ -30,7 +30,18 @@ const AllProduct = () => {
 
   useEffect(()=>{
     getAllProducts();
-  },[])
+  },[]);
+
+
+
+  const removeProduct=async (productId)=>{
+    try {
+      const res=await axios.delete(`${process.env.REACT_APP_DELETE_PRODUCT}/${productId}`).then(res=>res.data);
+      setAllProduct(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <section className="allproducts">
       {loading && <Loader />}
@@ -59,10 +70,10 @@ const AllProduct = () => {
                   <td>{item.details}</td>
                   <td>€{item.price}</td>
                   <td className="edit">
-                    <Link to="/edit-product">
+                    <Link to={`/edit-product/${item.id}`}>
                       <FaEdit />
                     </Link>
-                    <FaTrash />
+                    <FaTrash onClick={()=>removeProduct(item.id)} />
                   </td>
                 </tr>
               ))}

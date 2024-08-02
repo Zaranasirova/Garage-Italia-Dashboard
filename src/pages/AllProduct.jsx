@@ -1,13 +1,39 @@
+import axios from "axios";
+import React, { useEffect } from "react";
+import { useState } from "react";
+
 // Icons
 import { FaTrash, FaEdit } from "react-icons/fa";
 
 // Router
 import { Link } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const AllProduct = () => {
+  const [allProduct, setAllProduct] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const getAllProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await axios
+        .get(process.env.REACT_APP_ALL_PRODUCTS)
+        .then((res) => {
+          setAllProduct(res.data);
+        });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(()=>{
+    getAllProducts();
+  },[])
   return (
     <section className="allproducts">
-      {/* {loading && <Loader />} */}
+      {loading && <Loader />}
       <div className="container">
         <div className="row">
           <h2 className="title">All Product List</h2>
@@ -23,21 +49,23 @@ const AllProduct = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td className="ProductImg">
-                  <img src="" alt="ProductImg" />
-                </td>
-                <td>Name</td>
-                <td>Details</td>
-                <td>$0.00</td>
-                <td className="edit">
-                  <Link to="/edit-product">
-                    <FaEdit />
-                  </Link>
-                  <FaTrash />
-                </td>
-              </tr>
+              {allProduct.map((item,index) => (
+                <tr key={item.id}>
+                  <td>{index+1}</td>
+                  <td className="productImg">
+                    <img  src={`${process.env.REACT_APP_URL}/${item.productImage}`} alt="ProductImg" />
+                  </td>
+                  <td>{item.name}</td>
+                  <td>{item.details}</td>
+                  <td>€{item.price}</td>
+                  <td className="edit">
+                    <Link to="/edit-product">
+                      <FaEdit />
+                    </Link>
+                    <FaTrash />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

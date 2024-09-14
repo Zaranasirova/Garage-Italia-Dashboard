@@ -9,7 +9,7 @@ const EditProduct = () => {
     name: "",
     details:
       "",
-    productImage: "uploads/item1.png",
+    productImage: "",
     price:0, 
     old_price: 0,
   });
